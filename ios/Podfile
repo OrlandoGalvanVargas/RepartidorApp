@@ -34,11 +34,5 @@ target 'MiApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
-    script_phases = [
-      {
-        name: 'Config Environment',
-        execution_position: :before_compile
-      }
-    ]
   end
 end
