@@ -8,61 +8,99 @@ import { InfoCard, InfoRow } from '../../components/InfoCard';
 import { MenuItem } from '../../components/MenuItem';
 import { styles } from './styles';
 
-export default function SettingsScreen() {
-  const { user, logout, setUser } = useAuth();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+// Helper function para valores por defecto
+const getSafeValue = (value: string | undefined, defaultValue: string) => {
+  return value || defaultValue;
+};
 
-  const handleLogout = () => setShowLogoutModal(true);
+// Extraer lógica de logout a un hook personalizado
+const useLogout = () => {
+  const { logout, setUser } = useAuth();
+  const [showModal, setShowModal] = useState(false);
 
-  const confirmLogout = async () => {
+  const performLogout = async () => {
     await EncryptedStorage.removeItem('user');
-    setUser(null); 
+    setUser(null);
     logout();
-    setShowLogoutModal(false);
   };
+
+  return {
+    showModal,
+    requestLogout: () => setShowModal(true),
+    cancelLogout: () => setShowModal(false),
+    confirmLogout: async () => {
+      await performLogout();
+      setShowModal(false);
+    }
+  };
+};
+
+// Componente para el encabezado del perfil
+const ProfileHeader = ({ user }: { user: any }) => (
+  <View style={styles.profileHeader}>
+    <View style={styles.profileImage}>
+      <Ionicons name="person" size={50} color="#fff" />
+    </View>
+    <Text style={styles.userName}>{getSafeValue(user?.usuario.nombre, 'Usuario')}</Text>
+    <Text style={styles.userEmail}>{getSafeValue(user?.email, 'correo@ejemplo.com')}</Text>
+  </View>
+);
+
+// Componente para la sección de configuración
+const ConfigurationSection = () => (
+  <>
+    <Text style={styles.sectionTitle}>Configuración</Text>
+    <MenuItem iconName="notifications" text="Notificaciones" />
+    <MenuItem iconName="lock-closed" text="Seguridad" />
+    <MenuItem iconName="help-circle" text="Ayuda y Soporte" />
+  </>
+);
+
+export default function SettingsScreen() {
+  const { user } = useAuth();
+  const {
+    showModal,
+    requestLogout,
+    cancelLogout,
+    confirmLogout
+  } = useLogout();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Encabezado con foto de perfil */}
-      <View style={styles.profileHeader}>
-        <View style={styles.profileImage}>
-          <Ionicons name="person" size={50} color="#fff" />
-        </View>
-        <Text style={styles.userName}>{user?.usuario.nombre || 'Usuario'}</Text>
-        <Text style={styles.userEmail}>{user?.email || 'correo@ejemplo.com'}</Text>
-      </View>
+      <ProfileHeader user={user} />
       
-      {/* Sección de Información Personal */}
       <Text style={styles.sectionTitle}>Información Personal</Text>
       
       <InfoCard iconName="car" title="Vehículo">
-        <InfoRow label="Tipo:" value={user?.usuario.vehiculo.tipo || 'No especificado'} />
-        <InfoRow label="Matrícula:" value={user?.usuario.vehiculo.matricula || 'N/A'} />
+        <InfoRow 
+          label="Tipo:" 
+          value={getSafeValue(user?.usuario.vehiculo.tipo, 'No especificado')} 
+        />
+        <InfoRow 
+          label="Matrícula:" 
+          value={getSafeValue(user?.usuario.vehiculo.matricula, 'N/A')} 
+        />
       </InfoCard>
       
       <InfoCard iconName="business" title="Sucursal">
-        <Text style={styles.cardText}>{user?.usuario.sucursal || 'No asignada'}</Text>
+        <Text style={styles.cardText}>
+          {getSafeValue(user?.usuario.sucursal, 'No asignada')}
+        </Text>
       </InfoCard>
       
-      {/* Sección de Configuración */}
-      <Text style={styles.sectionTitle}>Configuración</Text>
+      <ConfigurationSection />
       
-      <MenuItem iconName="notifications" text="Notificaciones" />
-      <MenuItem iconName="lock-closed" text="Seguridad" />
-      <MenuItem iconName="help-circle" text="Ayuda y Soporte" />
-      
-      {/* Botón de Cerrar Sesión */}
       <TouchableOpacity 
         style={styles.logoutButton}
-        onPress={handleLogout}
+        onPress={requestLogout}
       >
         <Ionicons name="log-out" size={20} color="#fff" />
         <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
       </TouchableOpacity>
       
       <LogoutModal 
-        visible={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
+        visible={showModal}
+        onCancel={cancelLogout}
         onConfirm={confirmLogout}
       />
     </ScrollView>
