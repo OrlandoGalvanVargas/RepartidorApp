@@ -3,6 +3,8 @@ import { View, TextInput, Modal, Text, Image, TouchableOpacity } from 'react-nat
 import { ThemedText } from '../../components/ThemedText';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from './LoginStyles';
+import { PasswordField } from '../../components/PasswordField';
+import { LoginButton } from '../../components/LoginButton';
 
 export const LogoCard = () => (
   <View style={styles.logoCard}>
@@ -53,44 +55,15 @@ export const LoginForm = ({
       />
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={[styles.input, passwordError ? styles.inputError : null, styles.passwordInput]}
-          placeholder="Contraseña"
-          placeholderTextColor="#828282" 
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-          accessibilityLabel="Campo de contraseña"
-          accessibilityHint="Ingrese su contraseña registrada"
-        />
-        <TouchableOpacity
-          style={styles.eyeIcon}
-          onPress={() => setShowPassword(!showPassword)}
-          accessibilityLabel={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-          accessibilityRole="button"
-        >
-          <Ionicons 
-            name={showPassword ? "eye-off" : "eye"} 
-            size={24} 
-            color="#999" 
-          />
-        </TouchableOpacity>
-      </View>
+      <PasswordField 
+        password={password} 
+        showPassword={showPassword} 
+        setPassword={setPassword} 
+        setShowPassword={setShowPassword} 
+        passwordError={passwordError} 
+      />
       {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleLogin}
-        disabled={isLoading}
-        accessible={true}
-        accessibilityLabel="Botón para iniciar sesión"
-        accessibilityRole="button"
-      >
-        <ThemedText type="defaultSemiBold" style={styles.buttonText}>
-          {isLoading ? 'Cargando...' : 'Iniciar sesión'}
-        </ThemedText>
-      </TouchableOpacity>
+      <LoginButton isLoading={isLoading} handleLogin={handleLogin} />
     </View>
   );
 };

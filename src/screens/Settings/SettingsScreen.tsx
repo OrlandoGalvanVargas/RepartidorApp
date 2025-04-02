@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { styles } from  './styles';
+import { LogoutModal } from '../../components/LogoutModal';
+import { InfoCard, InfoRow } from '../../components/InfoCard';
+import { MenuItem } from '../../components/MenuItem';
+import { styles } from './styles';
 
 export default function SettingsScreen() {
   const { user, logout, setUser } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
-    setShowLogoutModal(true);
-  };
+  const handleLogout = () => setShowLogoutModal(true);
 
   const confirmLogout = async () => {
     await EncryptedStorage.removeItem('user');
@@ -34,49 +35,21 @@ export default function SettingsScreen() {
       {/* Sección de Información Personal */}
       <Text style={styles.sectionTitle}>Información Personal</Text>
       
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Ionicons name="car" size={24} color="#e2bd27" />
-          <Text style={styles.cardTitle}>Vehículo</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Tipo:</Text>
-          <Text style={styles.infoValue}>{user?.usuario.vehiculo.tipo || 'No especificado'}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Matrícula:</Text>
-          <Text style={styles.infoValue}>{user?.usuario.vehiculo.matricula || 'N/A'}</Text>
-        </View>
-      </View>
+      <InfoCard iconName="car" title="Vehículo">
+        <InfoRow label="Tipo:" value={user?.usuario.vehiculo.tipo || 'No especificado'} />
+        <InfoRow label="Matrícula:" value={user?.usuario.vehiculo.matricula || 'N/A'} />
+      </InfoCard>
       
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Ionicons name="business" size={24} color="#e2bd27" />
-          <Text style={styles.cardTitle}>Sucursal</Text>
-        </View>
+      <InfoCard iconName="business" title="Sucursal">
         <Text style={styles.cardText}>{user?.usuario.sucursal || 'No asignada'}</Text>
-      </View>
+      </InfoCard>
       
       {/* Sección de Configuración */}
       <Text style={styles.sectionTitle}>Configuración</Text>
       
-      <TouchableOpacity style={styles.menuItem}>
-        <Ionicons name="notifications" size={22} color="#666" />
-        <Text style={styles.menuItemText}>Notificaciones</Text>
-        <Ionicons name="chevron-forward" size={20} color="#999" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.menuItem}>
-        <Ionicons name="lock-closed" size={22} color="#666" />
-        <Text style={styles.menuItemText}>Seguridad</Text>
-        <Ionicons name="chevron-forward" size={20} color="#999" />
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.menuItem}>
-        <Ionicons name="help-circle" size={22} color="#666" />
-        <Text style={styles.menuItemText}>Ayuda y Soporte</Text>
-        <Ionicons name="chevron-forward" size={20} color="#999" />
-      </TouchableOpacity>
+      <MenuItem iconName="notifications" text="Notificaciones" />
+      <MenuItem iconName="lock-closed" text="Seguridad" />
+      <MenuItem iconName="help-circle" text="Ayuda y Soporte" />
       
       {/* Botón de Cerrar Sesión */}
       <TouchableOpacity 
@@ -87,37 +60,11 @@ export default function SettingsScreen() {
         <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
       </TouchableOpacity>
       
-      {/* Modal de confirmación */}
-      <Modal
+      <LogoutModal 
         visible={showLogoutModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowLogoutModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Ionicons name="log-out" size={50} color="#ff4444" style={styles.modalIcon} />
-            <Text style={styles.modalTitle}>¿Cerrar sesión?</Text>
-            <Text style={styles.modalText}>¿Estás seguro de que deseas salir de tu cuenta?</Text>
-            
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setShowLogoutModal(false)}
-              >
-                <Text style={styles.cancelButtonText}>Cancelar</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={confirmLogout}
-              >
-                <Text style={styles.confirmButtonText}>Sí, salir</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+      />
     </ScrollView>
   );
 }
