@@ -89,6 +89,7 @@ android {
         manifestPlaceholders = [
             appAuthRedirectScheme: 'com.miapp'
         ]
+        resValue "string", "build_config_package", "com.miapp"
 
     }
     signingConfigs {

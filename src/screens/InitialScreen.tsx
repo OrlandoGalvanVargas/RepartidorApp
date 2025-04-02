@@ -3,8 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
-
-export default function InitialScreen() {
+const InitialScreen = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
 
@@ -39,3 +38,7 @@ export default function InitialScreen() {
 
   return null;
 }
+
+export default InitialScreen;
+
+

@@ -4,6 +4,7 @@ require Pod::Executable.execute_command('node', ['-p',
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
+  require_relative '../node_modules/react-native-config/ReactNativeConfig'
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
@@ -16,7 +17,9 @@ end
 
 target 'MiApp' do
   config = use_native_modules!
-
+  pod 'react-native-config/Dev', :build_type => :debug
+  pod 'react-native-config/Staging', :build_type => :staging
+  pod 'react-native-config/Release', :build_type => :release
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
@@ -31,5 +34,12 @@ target 'MiApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    script_phases = [
+      {
+        name: 'Config Environment',
+        script: 'echo ".env.$(echo $CONFIGURATION | tr '[:upper:]' '[:lower:]')" > /tmp/envfile',
+        execution_position: :before_compile
+      }
+    ]
   end
 end

@@ -81,3 +81,6 @@ yarn-error.log
 # .gitignore
 .env.development
 .env.production
+
+# Environment variables
+.env.local
