@@ -5,6 +5,11 @@ import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 
+/**
+ * MainActivity sirve como el punto de entrada principal de la aplicación.
+ * Se encarga de inicializar React Native y administrar la interfaz de usuario principal.
+ */
+
 class MainActivity : ReactActivity() {
 
   /**

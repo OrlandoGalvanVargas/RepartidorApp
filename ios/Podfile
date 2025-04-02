@@ -37,7 +37,6 @@ target 'MiApp' do
     script_phases = [
       {
         name: 'Config Environment',
-        script: 'echo ".env.$(echo $CONFIGURATION | tr '[:upper:]' '[:lower:]')" > /tmp/envfile',
         execution_position: :before_compile
       }
     ]

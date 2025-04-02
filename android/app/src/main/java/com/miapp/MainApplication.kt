@@ -12,6 +12,12 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
 
+/**
+ * MainApplication es la clase de aplicación principal.
+ * Se encarga de inicializar y proporcionar la configuración global
+ * para React Native, incluyendo el ReactNativeHost y otros servicios necesarios.
+ */
+
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
