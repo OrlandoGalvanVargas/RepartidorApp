@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from './LoginStyles';
 import { PasswordField } from '../../components/PasswordField';
 import { LoginButton } from '../../components/LoginButton';
+import { BaseModal } from '../../components/BaseModal';
 
 export const LogoCard = () => (
   <View style={styles.logoCard}>
@@ -68,21 +69,14 @@ export const LoginForm = ({
   );
 };
 
-export const SuccessModal = ({ visible, onRequestClose }: { visible: boolean, onRequestClose: () => void }) => (
-  <Modal
-    visible={visible}
-    transparent={true}
-    animationType="fade"
-    onRequestClose={onRequestClose}
-    statusBarTranslucent={true}
-  >
-    <View style={styles.modalBackground}>
-      <View style={styles.modalContainer}>
-        <ThemedText type="title" style={styles.modalText}>Login Exitoso</ThemedText>
-        <Ionicons name="checkmark-circle" size={60} color="#4CAF50" />
-      </View>
-    </View>
-  </Modal>
+export const SuccessModal = ({ visible, onRequestClose }: { 
+  visible: boolean, 
+  onRequestClose: () => void 
+}) => (
+  <BaseModal visible={visible} onRequestClose={onRequestClose}>
+    <ThemedText type="title" style={styles.modalText}>Login Exitoso</ThemedText>
+    <Ionicons name="checkmark-circle" size={60} color="#4CAF50" />
+  </BaseModal>
 );
 
 export const ErrorModal = ({ visible, message, onRequestClose }: { 
@@ -90,17 +84,11 @@ export const ErrorModal = ({ visible, message, onRequestClose }: {
   message: string, 
   onRequestClose: () => void 
 }) => (
-  <Modal
-    visible={visible}
-    transparent={true}
-    animationType="fade"
+  <BaseModal 
+    visible={visible} 
     onRequestClose={onRequestClose}
-    statusBarTranslucent={true}
+    containerStyle={styles.errorModalContainer}
   >
-    <View style={styles.modalBackground}>
-      <View style={styles.errorModalContainer}>
-        <ThemedText type="title" style={styles.errorModalText}>{message}</ThemedText>
-      </View>
-    </View>
-  </Modal>
+    <ThemedText type="title" style={styles.errorModalText}>{message}</ThemedText>
+  </BaseModal>
 );
